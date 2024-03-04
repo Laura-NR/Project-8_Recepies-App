@@ -12,7 +12,7 @@ export default function AddRecipeForm() {
 
     const BASE_API_URL = 'http://localhost:3000/recipes';
     const HEADERS_API = {
-        'Accept': 'application/json, text/plain, */*',
+        //'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
     };
 
@@ -35,15 +35,15 @@ export default function AddRecipeForm() {
             console.log("formDataWithFile: ");
             console.log(formDataWithFile);
 
-            const options = { 
+            const options = {
                 method: 'POST',
                 headers: HEADERS_API,
                 body: formDataWithFile
             }
-            
+
             const response = await fetch(BASE_API_URL, options);
 
-            console.log(request)
+            //console.log(req);
 
             if (!response.ok) {
                 throw new Error('Failed to add recipe');
@@ -57,7 +57,7 @@ export default function AddRecipeForm() {
                 picture: null,
                 link: '',
             });
-            
+
         } catch (error) {
             console.error('Error adding recipe:', error.message);
         }
@@ -79,7 +79,7 @@ export default function AddRecipeForm() {
     };
 
     return (
-        <form method='post' onSubmit={handleSubmit}>
+        <form method='post' onSubmit={handleSubmit} encType='multipart/form-data'>
             <label htmlFor="title">Title:</label>
             <input
                 type="text"

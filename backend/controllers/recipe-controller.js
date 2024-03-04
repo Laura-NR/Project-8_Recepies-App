@@ -1,8 +1,9 @@
 import mysql from 'mysql2/promise';
+import multer from 'multer';
 import { app, upload } from '../app.js';
 
 export class RecipeController {
-  
+
   /*async listAll(req, res) {
     console.log('recipeController should list them all');
     const dbConnection = await this.createDBConnection();
@@ -17,7 +18,14 @@ export class RecipeController {
       const dbConnection = await this.createDBConnection();
       const currentDate = new Date();
       const sql = 'INSERT INTO recipes (title, ingredients, instructions, category, image, date) VALUES (?, ?, ?, ?, ?, ?)';
-      const [results, fields] = await dbConnection.query(sql, [req.body.title, req.body.ingredients, req.body.instructions, req.body.category, req.file.path, currentDate]); // Use req.file.path to get the file path
+
+      // Access form data properly using req.body
+      const { title, ingredients, instructions, category } = req.body;
+
+      // Access uploaded file path through req.file
+      const imagePath = req.file ? req.file.path : null;
+
+      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, category, imagePath, currentDate]);
       res.json({ message: "Recipe added to database" });
     } catch (error) {
       console.error('Error adding recipe:', error.message);
@@ -25,7 +33,9 @@ export class RecipeController {
     }
   }
 
-  
+
+
+
 
   async createDBConnection() {
     return mysql.createConnection({
