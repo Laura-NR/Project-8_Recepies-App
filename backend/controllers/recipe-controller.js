@@ -7,7 +7,11 @@ export class RecipeController {
   async listAll(req, res) {
     console.log('recipeController should list them all');
     const dbConnection = await this.createDBConnection();
-    const [results, fields] = await dbConnection.query('SELECT * FROM recipes');
+    const [results, fields] = await dbConnection.query(`
+            SELECT recipes.*, categories.name AS categoryName
+            FROM recipes
+            LEFT JOIN categories ON recipes.category = categories.id
+    `);
     // Transform each recipe to adjust the image path
     const resultsWithWebAccessiblePaths = results.map(recipe => ({
         ...recipe,
@@ -26,16 +30,16 @@ export class RecipeController {
     try {
       const dbConnection = await this.createDBConnection();
       const currentDate = new Date();
-      const sql = 'INSERT INTO recipes (title, ingredients, instructions, image, date, link) VALUES (?, ?, ?, ?, ?, ?)';
+      const sql = 'INSERT INTO recipes (title, ingredients, instructions, image, date, link, category) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
       // Access form data properly using req.body
-      const { title, ingredients, instructions, link } = req.body;
+      const { title, ingredients, instructions, link, category } = req.body;
 
       // Access uploaded file path through req.file
       const imagePath = req.file ? `/assets/${req.file.filename}` : null;
       console.log('Image Path: ', imagePath);
 
-      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, imagePath, currentDate, link]);
+      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, imagePath, currentDate, link, category]);
       res.status(200).json({
         status: 'success',
         message: 'Recipe added to database',
@@ -45,7 +49,8 @@ export class RecipeController {
           instructions: instructions,
           image: imagePath,
           date: currentDate,
-          link: link
+          link: link,
+          category: categoryId
         }
       });
     } catch (error) {
@@ -73,7 +78,7 @@ export class RecipeController {
   async update(req, res) {
     const { id } = req.params;
     // Destructure fields from req.body
-    const { title, ingredients, instructions, link } = req.body;
+    const { title, ingredients, instructions, link, category } = req.body;
     
     // Check for an uploaded file
     const imagePath = req.file ? `/assets/${req.file.filename}` : undefined;
@@ -81,8 +86,8 @@ export class RecipeController {
     const dbConnection = await this.createDBConnection();
     try {
         // Construct your SQL query to conditionally include the image path if a new image was uploaded
-        let query = 'UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, link = ?';
-        const queryParams = [title, ingredients, instructions, link];
+        let query = 'UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, link = ?, category = ?';
+        const queryParams = [title, ingredients, instructions, link, category];
 
         if (imagePath) {
             query += ', image = ?';

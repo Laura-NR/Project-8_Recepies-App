@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import recipesRouter from './routes/recipes.js';
+import categoriesRouter from "./routes/categories.js";
 
 // Create Express app
 const app = express();
@@ -44,6 +45,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 
 // Define routes
 app.use('/recipes', recipesRouter());
+app.use('/categories', categoriesRouter());
 app.use('/users', usersRouter);
 app.use('/', (req, res) => res.send('la bienvenue!'));
 

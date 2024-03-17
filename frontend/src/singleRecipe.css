@@ -9,6 +9,7 @@
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   overflow-y: auto; /* Allows scrolling on the overlay if needed */
+  z-index: 1050;
 }
 
 .modal-content-recipe {
@@ -28,8 +29,11 @@
 }
 
 .recipe-image {
-  max-width: 500px; /* Adjust size as needed */
-  height: auto;
+  width: 500px; /* Adjust size as needed */
+  /* height: auto; */
+  height: 500px;
+  object-fit: cover;
+  overflow: hidden;
 }
 
 .recipe-details {

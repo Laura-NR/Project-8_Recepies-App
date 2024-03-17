@@ -5,6 +5,12 @@
     cursor: pointer;
 }
 
+.card img {
+    width: 248px;
+    height: 248px;
+    object-fit: cover;
+}
+
 .card-body {
     transition: max-height 0.3s ease;
     overflow: hidden;
@@ -16,6 +22,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
+    margin-top: 40px;
 }
 
 .recipes-button {

@@ -1,0 +1,4 @@
+.categories-display .btn {
+    margin-right: 0.5rem; /* Adds space between buttons */
+    margin-bottom: 0.5rem; /* Adds space between rows when wrapped */
+}

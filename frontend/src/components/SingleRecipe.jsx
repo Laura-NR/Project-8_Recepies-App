@@ -9,6 +9,8 @@ function SingleRecipe({ recipe, onClose }) {
     const ingredientsList = recipe.ingredients.split('\n');
     const instructionsList = recipe.instructions.split('\n');
 
+    console.log(recipe);
+
     return (
         <div className="modal-overlay-recipe" onClick={onClose}>
             <div className="modal-content-recipe" onClick={e => e.stopPropagation()}>
@@ -17,7 +19,7 @@ function SingleRecipe({ recipe, onClose }) {
                         <img src={imageUrl} alt={recipe.title} className="img-fluid" />
                     </div>
                     <div className="recipe-details">
-                        <h2>{recipe.title}</h2>
+                        <h2>{recipe.title}<span className="recipe-category"> - {recipe.categoryName}</span></h2>
                         <strong>Ingredients:</strong>
                         <ul>
                             {ingredientsList.map((ingredient, index) => (

@@ -9,7 +9,9 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
         instructions: '',
         picture: null, // For file upload
         link: '',
+        categoryId: '',
     });
+    const [categories, setCategories] = useState([]);
 
     const BASE_API_URL = editingRecipe ? `http://localhost:3000/recipes/${editingRecipe.id}` : 'http://localhost:3000/recipes';
 
@@ -21,10 +23,28 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
                 ingredients: editingRecipe.ingredients,
                 instructions: editingRecipe.instructions,
                 picture: editingRecipe.image,
-                link: editingRecipe.link
+                link: editingRecipe.link,
+                categoryId: editingRecipe.category
             });
         }
     }, [editingRecipe]);
+
+    useEffect(() => {
+        // Function to fetch categories
+        const fetchCategories = async () => {
+            const response = await fetch('http://localhost:3000/categories', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any other headers here
+                },
+            });
+            const data = await response.json();
+            console.log('Categories: ', data);
+            setCategories(data);
+        };
+    
+        fetchCategories();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -38,6 +58,7 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
                 formDataWithFile.append('picture', formData.picture); // Append file data if it exists
             }
             formDataWithFile.append('link', formData.link);
+            formDataWithFile.append('category', formData.categoryId);
 
             console.log("formData: ");
             console.log(formData);
@@ -67,6 +88,7 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
                 instructions: '',
                 picture: null,
                 link: '',
+                categoryId: '',
             });
 
             // Close the modal
@@ -133,6 +155,18 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
                         className='form-control'
                         onChange={handleChange}
                     />
+
+                    <div className="mb-3"> {/* Bootstrap form group */}
+                    <label htmlFor="categoryId" className="form-label text-light">Category:</label>
+                    <select className="form-select" name="categoryId" value={formData.categoryId} onChange={handleChange}>
+                        <option value="">Select a category</option> {/* Default option */}
+                        {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
 
                     <label htmlFor="link" className='form-label text-light'>YouTube or Website Link:</label>
                     <input

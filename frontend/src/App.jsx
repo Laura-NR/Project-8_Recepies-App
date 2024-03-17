@@ -3,6 +3,7 @@ import './App.css';
 import AddRecipeForm from './components/AddRecipeForm';
 import Recipes from './components/recipes';
 import TopBar from './components/TopBar';
+import CategoriesDisplay from './components/CategoriesDisplay';
 
 export default function App() {
   const [showForm, setShowForm] = useState(false);
@@ -46,6 +47,9 @@ export default function App() {
       <div>
         <TopBar setShowForm={setShowForm} onSearchChange={handleSearchChange} />
         {showForm || editingRecipe ? <AddRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} /> : null}
+      </div>
+      <div className="categories-display container mb-4"  style={{ marginLeft: '20%', marginTop: '-300px' }}>
+        <CategoriesDisplay />
       </div>
       <div className="recipes-grid">
         <Recipes recipes={filteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} />
