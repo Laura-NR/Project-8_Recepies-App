@@ -1,34 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import SingleRecipe from './SingleRecipe'; // Import the new component
 import '../recipes.css';
 
-export default function Recipes({ recipe }) {
-    const [recipes, setRecipes] = useState([]);
+// Now Recipes accepts a `recipes` prop instead of fetching data itself
+export default function Recipes({ recipes }) {
     const [selectedRecipe, setSelectedRecipe] = useState(null); // State to track the selected recipe
-
-    useEffect(() => {
-        async function fetchData() {
-            const response = await fetch('http://localhost:3000/recipes');
-            const data = await response.json();
-            console.log("Fetched data:", data);
-            setRecipes(data);
-        }
-        fetchData();
-    }, []);
-
 
     return (
         <>
             <div className="recipes-container">
                 {recipes.length > 0 ? (
                     recipes.map(recipe => {
-                        // Move the construction of imageUrl inside the map function
                         const imageUrl = `http://localhost:3000${recipe?.image}`;
                         return (
                             <div className="card" key={recipe.id} onClick={() => setSelectedRecipe(recipe)}>
                                 <img src={imageUrl} alt={recipe.title} />
                                 <div className="card-body">
                                     <h5 className="card-title">{recipe.title}</h5>
+                                    <button className='recipes-button'>✏️</button>
+                                    <button className='recipes-button'>🗑️</button>
                                 </div>
                             </div>
                         );
@@ -40,6 +31,4 @@ export default function Recipes({ recipe }) {
             {selectedRecipe && <SingleRecipe recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />}
         </>
     );
-    
-    
 }

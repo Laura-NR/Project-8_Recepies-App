@@ -3,7 +3,7 @@ import '../TopBar.css';
 import SearchBar from './SearchBar'; // And your custom search bar
 import NewRecipe from './NewRecipe';
 
-function TopBar({ setShowForm }) {
+function TopBar({ setShowForm, onSearchChange }) {
     return (
         <div className="top-bar">
             <div className="container-fluid">
@@ -12,7 +12,7 @@ function TopBar({ setShowForm }) {
                         <NewRecipe handleButtonClick={() => setShowForm(true)} />
                     </div>
                     <div>
-                        <SearchBar />
+                        <SearchBar onSearchChange={onSearchChange} />
                     </div>
                 </div>
             </div>

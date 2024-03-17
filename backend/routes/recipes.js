@@ -22,12 +22,10 @@ const recipesRouter = () => {
     recipeController.create(req, res);
   });
 
-  /* router.delete('/:id', function(req, res) {
+  router.delete('/:id', function(req, res) {
     recipeController.destroy(req, res);
-  }); */
+  });
 
-  // Handle file upload
- /*  router.post('/', recipeController.create);*/
   return router; 
 }
 

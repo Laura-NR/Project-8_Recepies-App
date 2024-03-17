@@ -1,22 +1,50 @@
 import React from 'react';
-import '../singleRecipe.css'; // Assume you have CSS for styling the modal
+import '../singleRecipe.css'; // Ensure you have CSS for styling the modal
 
 function SingleRecipe({ recipe, onClose }) {
+    // Construct the full URL for the image
+    const imageUrl = `http://localhost:3000${recipe?.image}`;
+
+    // Split ingredients and instructions into arrays based on line breaks
+    const ingredientsList = recipe.ingredients.split('\n');
+    const instructionsList = recipe.instructions.split('\n');
+
     return (
         <div className="modal-overlay-recipe" onClick={onClose}>
-            <div className="modal-content-recipe" onClick={e => e.stopPropagation()}> {/* Prevents click inside the modal from closing it */}
-                <div className="recipe-container"> {/* This container can be styled further if needed */}
-                    <img src={recipe.image} alt={recipe.title} className="img-fluid" />
-                    <h2>{recipe.title}</h2>
-                    <p><strong>Ingredients:</strong> {recipe.ingredients}</p>
-                    <p><strong>Instructions:</strong> {recipe.instructions}</p>
-                    {recipe.link && <a href={recipe.link} target="_blank" rel="noopener noreferrer">View Tutorial</a>}
+            <div className="modal-content-recipe" onClick={e => e.stopPropagation()}>
+                <div className="recipe-top">
+                    <div className="recipe-image">
+                        <img src={imageUrl} alt={recipe.title} className="img-fluid" />
+                    </div>
+                    <div className="recipe-details">
+                        <h2>{recipe.title}</h2>
+                        <strong>Ingredients:</strong>
+                        <ul>
+                            {ingredientsList.map((ingredient, index) => (
+                                <li key={index}>{ingredient}</li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
-                <button onClick={onClose}>Close</button>
+                <div className="recipe-instructions">
+                    <strong>Instructions:</strong>
+                    <ol>
+                        {instructionsList.map((instruction, index) => (
+                            <li key={index}>{instruction}</li>
+                        ))}
+                    </ol>
+                </div>
+                {recipe.link && (
+                    <div className="recipe-link">
+                        <a href={recipe.link} target="_blank" rel="noopener noreferrer">View Tutorial</a>
+                    </div>
+                )}
+                <div className="close-button">
+                    <button onClick={onClose}>Close Recipe</button>
+                </div>
             </div>
         </div>
     );
 }
-
 
 export default SingleRecipe;
