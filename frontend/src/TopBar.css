@@ -1,0 +1,9 @@
+/* TopBar.css */
+.top-bar {
+    position: absolute;
+    top: 0;
+    width: 90%;
+    padding: 10px 0;
+    margin-left: 4%;
+  }
+  

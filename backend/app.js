@@ -2,6 +2,8 @@ import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
 
 // importation du code des sous routeurs
 import indexRouter from './routes/index.js';
@@ -14,6 +16,8 @@ const app = express();
 // Set up CORS
 app.use(cors());
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 // Set up multer storage for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,7 +29,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 10000000 },
 });
 
 // Apply multer middleware to parse form data
@@ -33,10 +37,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Apply multer middleware to handle all form submissions together
-app.use(upload.any()); // Middleware to handle all form submissions together, including files
+//app.use(upload.any()); // Middleware to handle all form submissions together, including files
 
 // Define routes
-app.use('/recipes', recipesRouter);
+app.use('/recipes', recipesRouter());
 app.use('/users', usersRouter);
 app.use('/', (req, res) => res.send('la bienvenue!'));
 

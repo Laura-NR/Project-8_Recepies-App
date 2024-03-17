@@ -4,12 +4,13 @@ import { app, upload } from '../app.js';
 
 export class RecipeController {
 
-  /*async listAll(req, res) {
+  async listAll(req, res) {
     console.log('recipeController should list them all');
     const dbConnection = await this.createDBConnection();
-    const [results, fields] = await dbConnection.query('SELECT * FROM recipes');
-    res.send(results);
-  }*/
+    const [results, fields] = await dbConnection.query('SELECT id, title, ingredients, instructions FROM recipes');
+    console.log(results);
+    res.json(results);
+  }
 
   async create(req, res) {
     console.log("Create controller Function:");
@@ -17,24 +18,32 @@ export class RecipeController {
     try {
       const dbConnection = await this.createDBConnection();
       const currentDate = new Date();
-      const sql = 'INSERT INTO recipes (title, ingredients, instructions, category, image, date) VALUES (?, ?, ?, ?, ?, ?)';
+      const sql = 'INSERT INTO recipes (title, ingredients, instructions, image, date, link) VALUES (?, ?, ?, ?, ?, ?)';
 
       // Access form data properly using req.body
-      const { title, ingredients, instructions, category } = req.body;
+      const { title, ingredients, instructions, link } = req.body;
 
       // Access uploaded file path through req.file
       const imagePath = req.file ? req.file.path : null;
 
-      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, category, imagePath, currentDate]);
-      res.json({ message: "Recipe added to database" });
+      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, imagePath, currentDate, link]);
+      res.status(200).json({
+        status: 'success',
+        message: 'Recipe added to database',
+        recipe: {
+          title: title,
+          ingredients: ingredients,
+          instructions: instructions,
+          image: imagePath,
+          date: currentDate,
+          link: link
+        }
+      });
     } catch (error) {
       console.error('Error adding recipe:', error.message);
-      res.status(500).json({ error: 'Error adding recipe' });
+      res.status(500).json( 'Error adding recipe: ' + error.message);
     }
   }
-
-
-
 
 
   async createDBConnection() {

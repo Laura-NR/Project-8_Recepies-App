@@ -1,0 +1,24 @@
+.modal-overlay-recipe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+  
+.modal-content-recipe {
+  background-color: white; /* Ensures the background is white */
+  padding: 20px; /* Adds some space inside the container */
+  border-radius: 5px; /* Softens the corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Adds a subtle shadow around the container */
+  position: relative; /* Keeps the modal content positioned correctly */
+  max-width: 500px; /* Limits the width of the modal to ensure it doesn't stretch too wide */
+  width: 90%; /* Makes the modal responsive, adjusting to screen width */
+  margin: auto; /* This helps in centering the modal if flexbox properties don't apply as expected */
+}
+  
+  

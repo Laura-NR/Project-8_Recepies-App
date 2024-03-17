@@ -1,0 +1,19 @@
+.card {
+    width: 250px;
+    height: auto;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.card-body {
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+.recipes-container {
+    width: 80vw;
+    margin-left: 12%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
