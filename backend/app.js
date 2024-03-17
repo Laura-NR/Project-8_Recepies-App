@@ -21,7 +21,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Set up multer storage for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '..', 'frontend', 'src', 'assets'));
+    cb(null, path.join(__dirname, 'public', 'assets'));
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -38,6 +38,9 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Apply multer middleware to handle all form submissions together
 //app.use(upload.any()); // Middleware to handle all form submissions together, including files
+
+//Serving image files with express.static
+app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 
 // Define routes
 app.use('/recipes', recipesRouter());

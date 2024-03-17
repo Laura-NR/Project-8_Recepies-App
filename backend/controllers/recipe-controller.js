@@ -7,9 +7,17 @@ export class RecipeController {
   async listAll(req, res) {
     console.log('recipeController should list them all');
     const dbConnection = await this.createDBConnection();
-    const [results, fields] = await dbConnection.query('SELECT id, title, ingredients, instructions FROM recipes');
-    console.log(results);
-    res.json(results);
+    const [results, fields] = await dbConnection.query('SELECT * FROM recipes');
+    // Transform each recipe to adjust the image path
+    const resultsWithWebAccessiblePaths = results.map(recipe => ({
+        ...recipe,
+        // Assuming 'image' contains the filesystem path, replace it with a relative web path
+        // This assumes your images are served from /assets and stored with filenames in the DB
+        image: recipe.image ? recipe.image.replace(/^.*[\\\/]/, '/assets/') : null
+    }));
+
+    console.log(resultsWithWebAccessiblePaths);
+    res.json(resultsWithWebAccessiblePaths);
   }
 
   async create(req, res) {
@@ -24,7 +32,8 @@ export class RecipeController {
       const { title, ingredients, instructions, link } = req.body;
 
       // Access uploaded file path through req.file
-      const imagePath = req.file ? req.file.path : null;
+      const imagePath = req.file ? `/assets/${req.file.filename}` : null;
+      console.log('Image Path: ', imagePath);
 
       const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, imagePath, currentDate, link]);
       res.status(200).json({
