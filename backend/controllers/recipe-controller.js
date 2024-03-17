@@ -54,6 +54,13 @@ export class RecipeController {
     }
   }
 
+  async destroy(req, res) {
+    //const dbConnection = await this.createDBConnection();
+    console.log('connexion db réussie');
+    const [results, fields] = await dbConnection.query('DELETE FROM recipes WHERE id = ?', [req.params.id]);
+    res.json({ message: "Recipe deleted", results: results });
+  }
+
 
   async createDBConnection() {
     return mysql.createConnection({
