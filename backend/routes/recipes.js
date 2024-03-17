@@ -22,6 +22,10 @@ const recipesRouter = () => {
     recipeController.create(req, res);
   });
 
+  router.put('/:id', upload.single('picture'), (req, res) => {
+    recipeController.update(req, res);
+  });  
+
   router.delete('/:id', function(req, res) {
     recipeController.destroy(req, res);
   });

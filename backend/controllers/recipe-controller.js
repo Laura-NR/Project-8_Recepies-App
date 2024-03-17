@@ -55,12 +55,54 @@ export class RecipeController {
   }
 
   async destroy(req, res) {
-    //const dbConnection = await this.createDBConnection();
-    console.log('connexion db réussie');
-    const [results, fields] = await dbConnection.query('DELETE FROM recipes WHERE id = ?', [req.params.id]);
-    res.json({ message: "Recipe deleted", results: results });
+    const dbConnection = await this.createDBConnection();
+    try {
+        const [results, fields] = await dbConnection.query('DELETE FROM recipes WHERE id = ?', [req.params.id]);
+        console.log(req.params.id);
+        if (results.affectedRows > 0) {
+            res.status(200).json({ message: "Recipe deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Recipe not found" });
+        }
+    } catch (error) {
+        console.error('Error deleting recipe:', error.message);
+        res.status(500).json({ message: 'Error deleting recipe: ' + error.message });
+    }
   }
 
+  async update(req, res) {
+    const { id } = req.params;
+    // Destructure fields from req.body
+    const { title, ingredients, instructions, link } = req.body;
+    
+    // Check for an uploaded file
+    const imagePath = req.file ? `/assets/${req.file.filename}` : undefined;
+
+    const dbConnection = await this.createDBConnection();
+    try {
+        // Construct your SQL query to conditionally include the image path if a new image was uploaded
+        let query = 'UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, link = ?';
+        const queryParams = [title, ingredients, instructions, link];
+
+        if (imagePath) {
+            query += ', image = ?';
+            queryParams.push(imagePath);
+        }
+
+        query += ' WHERE id = ?';
+        queryParams.push(id);
+
+        const [results] = await dbConnection.query(query, queryParams);
+        if (results.affectedRows > 0) {
+            res.status(200).json({ message: "Recipe updated successfully" });
+        } else {
+            res.status(404).json({ message: "Recipe not found" });
+        }
+    } catch (error) {
+        console.error('Error updating recipe:', error.message);
+        res.status(500).json({ message: 'Error updating recipe: ' + error.message });
+    }
+}
 
   async createDBConnection() {
     return mysql.createConnection({

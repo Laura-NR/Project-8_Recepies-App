@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import NewRecipe from './NewRecipe';
 import '../AddRecipeForm.css';
 
-export default function AddRecipeForm({ setShowForm }) {
+export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe, setEditingRecipe }) {
     const [formData, setFormData] = useState({
         title: '',
         ingredients: '',
@@ -11,10 +11,20 @@ export default function AddRecipeForm({ setShowForm }) {
         link: '',
     });
 
-    const BASE_API_URL = 'http://localhost:3000/recipes';
-    /* const HEADERS_API = {
-        'Content-Type': 'multipart/form-data'
-    }; */
+    const BASE_API_URL = editingRecipe ? `http://localhost:3000/recipes/${editingRecipe.id}` : 'http://localhost:3000/recipes';
+
+    useEffect(() => {
+        // If editingRecipe is not null, pre-populate the form
+        if (editingRecipe) {
+            setFormData({
+                title: editingRecipe.title,
+                ingredients: editingRecipe.ingredients,
+                instructions: editingRecipe.instructions,
+                picture: editingRecipe.image,
+                link: editingRecipe.link
+            });
+        }
+    }, [editingRecipe]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -36,14 +46,15 @@ export default function AddRecipeForm({ setShowForm }) {
             console.log(formDataWithFile);
 
             const options = {
-                method: 'POST',
-                //headers: HEADERS_API,
+                method: editingRecipe ? 'PUT' : 'POST',
                 body: formDataWithFile
             }
 
             const response = await fetch(BASE_API_URL, options);
 
-            //console.log(req);
+            // On success:
+            fetchRecipes(); // Refresh the recipes list
+            setEditingRecipe(null); // Reset editing state
 
             if (!response.ok) {
                 throw new Error('Failed to add recipe');
