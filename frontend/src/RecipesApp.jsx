@@ -4,6 +4,7 @@ import AddRecipeForm from './components/AddRecipeForm';
 import Recipes from './components/recipes';
 import TopBar from './components/TopBar';
 import CategoriesDisplay from './components/CategoriesDisplay';
+import { fetchRecipes, deleteRecipe as deleteRecipeAPI } from './API/recipe-manager';
 
 export default function RecipesApp({ onLogout }) {
   const [showForm, setShowForm] = useState(false);
@@ -39,30 +40,20 @@ export default function RecipesApp({ onLogout }) {
     setCategories(currentCategories => [...currentCategories, newCategory]);
   };
 
-  // Fetch recipes data when the component mounts
-  const fetchRecipes = async () => {
-    const jwt = localStorage.getItem('jwt'); // Retrieve the stored token
-    try {
-      const response = await fetch('http://localhost:3000/recipes', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${jwt}`, // Include the token in the Authorization header
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch recipes');
-      }
-      const recipes = await response.json();
-      setRecipes(recipes);
-    } catch (error) {
-      console.error('Error fetching recipes:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchRecipes();
+    const init = async () => {
+      const jwt = localStorage.getItem('jwt');
+      try {
+        const recipesData = await fetchRecipes(jwt);
+        console.log('Fetched recipes:', recipesData); // Debugging line
+        setRecipes(recipesData);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      }
+    };
+    init();
   }, []);
+
 
   const handleSearchChange = (newSearchTerm) => {
     setSearchTerm(newSearchTerm.toLowerCase());
@@ -76,22 +67,12 @@ export default function RecipesApp({ onLogout }) {
   // Method to delete a recipe
   const deleteRecipe = async (id) => {
     const jwtToken = localStorage.getItem('jwt'); // Retrieve the JWT token from local storage
-    const options = {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${jwtToken}` // Include the JWT token in the Authorization header
-      }
-    };
-
-    try {
-      const response = await fetch(`http://localhost:3000/recipes/${id}`, options);
-      if (!response.ok) {
-        throw new Error('Failed to delete recipe');
-      }
-      // Update the local state to remove the deleted recipe
-      setRecipes(recipes.filter(recipe => recipe.id !== id));
-    } catch (error) {
-      console.error('Failed to delete recipe:', error);
+    const success = await deleteRecipeAPI(id, jwtToken);
+    if (success) {
+      // Update the local state to remove the deleted recipe if delete was successful
+      setRecipes((currentRecipes) => currentRecipes.filter((recipe) => recipe.id !== id));
+    } else {
+      console.error('Failed to delete recipe');
     }
   };
 

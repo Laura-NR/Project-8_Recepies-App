@@ -31,6 +31,7 @@ export default function App() {
 
     // Handler to switch to the registration form
     const switchToRegister = () => setShowRegister(true);
+    const switchToLogin = () => setShowRegister(false);
 
     // Handler for successful registration
     const onRegistrationSuccess = () => {
@@ -44,11 +45,10 @@ export default function App() {
         return (
             <>
                 {showRegister ? (
-                    <Register onRegistrationSuccess={onRegistrationSuccess} />
+                    <Register onRegistrationSuccess={onRegistrationSuccess} switchToLogin={switchToLogin} />
                 ) : (
                     <>
-                        <Authenticate onAuthenticatedChanged={onAuthenticatedChangedHandler} />
-                        <button onClick={switchToRegister}>Register</button>
+                        <Authenticate onAuthenticatedChanged={onAuthenticatedChangedHandler} switchToRegister={switchToRegister} />
                     </>
                 )}
             </>
