@@ -1,59 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import AddRecipeForm from './components/AddRecipeForm';
-import Recipes from './components/recipes';
-import TopBar from './components/TopBar';
-import CategoriesDisplay from './components/CategoriesDisplay';
+import { useState, useEffect } from "react";
+import Authenticate from "./components/Authenticate";
+import RecipesApp from "./RecipesApp";
+import Register from "./components/Register";
+
 
 export default function App() {
-  const [showForm, setShowForm] = useState(false);
-  const [recipes, setRecipes] = useState([]); // State to hold recipes data
-  const [searchTerm, setSearchTerm] = useState('');
-  const [editingRecipe, setEditingRecipe] = useState(null);
+    const [authenticated, setAuthenticated] = useState(false);
+    const [showRegister, setShowRegister] = useState(false);
 
-  // Fetch recipes data when the component mounts
-  const fetchRecipes = async () => {
-    const response = await fetch('http://localhost:3000/recipes'); // Adjust the URL as needed
-    const data = await response.json();
-    setRecipes(data);
-  };
+    useEffect(() => {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            setAuthenticated(true);
+        }
+    }, []);
 
-  useEffect(() => {
-    fetchRecipes();
-  }, []);
+    const onAuthenticatedChangedHandler = (newAuthValue, token) => {
+        if (newAuthValue) {
+            localStorage.setItem('jwt', token); // Save the token when logging in
+        } else {
+            localStorage.removeItem('jwt'); // Remove the token when logging out
+        }
+        setAuthenticated(newAuthValue);
+    };
 
-  const handleSearchChange = (newSearchTerm) => {
-    setSearchTerm(newSearchTerm.toLowerCase());
-  };
-  
-  const filteredRecipes = recipes.filter(recipe => 
-    (recipe.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recipe.description?.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+    const handleLogout = () => {
+        localStorage.removeItem('jwt');
+        setAuthenticated(false);
+    };
 
-  // Method to delete a recipe
-  const deleteRecipe = async (id) => {
-    try {
-        await fetch(`http://localhost:3000/recipes/${id}`, { method: 'DELETE' });
-        // Update the local state to remove the deleted recipe
-        setRecipes(recipes.filter(recipe => recipe.id !== id));
-    } catch (error) {
-        console.error('Failed to delete recipe:', error);
+    // Handler to switch to the registration form
+    const switchToRegister = () => setShowRegister(true);
+
+    // Handler for successful registration
+    const onRegistrationSuccess = () => {
+        setShowRegister(false); // Go back to the login form
+        alert("Registration successful. Please login.");
+    };
+
+    if (authenticated) {
+        return <RecipesApp onLogout={handleLogout} />;
+    } else {
+        return (
+            <>
+                {showRegister ? (
+                    <Register onRegistrationSuccess={onRegistrationSuccess} />
+                ) : (
+                    <>
+                        <Authenticate onAuthenticatedChanged={onAuthenticatedChangedHandler} />
+                        <button onClick={switchToRegister}>Register</button>
+                    </>
+                )}
+            </>
+        );
     }
-  };
-
-  return (
-    <>
-      <div>
-        <TopBar setShowForm={setShowForm} onSearchChange={handleSearchChange} />
-        {showForm || editingRecipe ? <AddRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} /> : null}
-      </div>
-      <div className="categories-display container mb-4"  style={{ marginLeft: '20%', marginTop: '-300px' }}>
-        <CategoriesDisplay />
-      </div>
-      <div className="recipes-grid">
-        <Recipes recipes={filteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} />
-      </div>
-    </>
-  );
 }

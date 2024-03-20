@@ -3,7 +3,7 @@ import React from 'react';
 export default function SearchBar({ onSearchChange }) {
     return (
         <>
-        <div className="input-group mb-3">
+        <div className="input-group">
             <input
                 type="search"
                 name="searchBar"

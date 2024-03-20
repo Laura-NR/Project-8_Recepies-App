@@ -3,6 +3,7 @@ import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import 'dotenv/config';
 
 
 // importation du code des sous routeurs
@@ -46,7 +47,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 // Define routes
 app.use('/recipes', recipesRouter());
 app.use('/categories', categoriesRouter());
-app.use('/users', usersRouter);
+app.use('/users', usersRouter());
 app.use('/', (req, res) => res.send('la bienvenue!'));
 
 // error handler

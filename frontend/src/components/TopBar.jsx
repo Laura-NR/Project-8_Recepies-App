@@ -3,8 +3,9 @@ import '../TopBar.css';
 import SearchBar from './SearchBar'; // And your custom search bar
 import NewRecipe from './NewRecipe';
 import Categories from './categories';
+import LogoutButton from './LogoutButton';
 
-function TopBar({ setShowForm, onSearchChange }) {
+function TopBar({ setShowForm, onSearchChange, onCategoryAdded, onLogout }) {
     return (
         <div className="top-bar">
             <div className="container-fluid">
@@ -13,10 +14,13 @@ function TopBar({ setShowForm, onSearchChange }) {
                         <div className="me-5">
                             <NewRecipe handleButtonClick={() => setShowForm(true)} />
                         </div>
-                        <Categories />
+                        <Categories onCategoryAdded={onCategoryAdded} />
                     </div>
-                    <div>
+                    <div className="d-flex align-items-center">
+                        <div className="me-3">
                         <SearchBar onSearchChange={onSearchChange} />
+                        </div>
+                        <LogoutButton onLogout={onLogout} />
                     </div>
                 </div>
             </div>

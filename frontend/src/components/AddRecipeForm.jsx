@@ -32,17 +32,21 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
     useEffect(() => {
         // Function to fetch categories
         const fetchCategories = async () => {
+            const jwtToken = localStorage.getItem('jwt'); // Assuming the JWT token is stored in local storage with the key 'jwt'
             const response = await fetch('http://localhost:3000/categories', {
                 headers: {
-                    'Content-Type': 'application/json',
-                    // Add any other headers here
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json'
                 },
             });
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories');
+            }
             const data = await response.json();
             console.log('Categories: ', data);
             setCategories(data);
         };
-    
+
         fetchCategories();
     }, []);
 
@@ -60,6 +64,8 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
             formDataWithFile.append('link', formData.link);
             formDataWithFile.append('category', formData.categoryId);
 
+            const jwtToken = localStorage.getItem('jwt');
+
             console.log("formData: ");
             console.log(formData);
 
@@ -68,7 +74,10 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
 
             const options = {
                 method: editingRecipe ? 'PUT' : 'POST',
-                body: formDataWithFile
+                body: formDataWithFile,
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}` // Include the JWT token in the Authorization header
+                }
             }
 
             const response = await fetch(BASE_API_URL, options);
@@ -157,15 +166,15 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, editingRecipe
                     />
 
                     <div className="mb-3"> {/* Bootstrap form group */}
-                    <label htmlFor="categoryId" className="form-label text-light">Category:</label>
-                    <select className="form-select" name="categoryId" value={formData.categoryId} onChange={handleChange}>
-                        <option value="">Select a category</option> {/* Default option */}
-                        {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.name}
-                        </option>
-                        ))}
-                    </select>
+                        <label htmlFor="categoryId" className="form-label text-light">Category:</label>
+                        <select className="form-select" name="categoryId" value={formData.categoryId} onChange={handleChange}>
+                            <option value="">Select a category</option> {/* Default option */}
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     <label htmlFor="link" className='form-label text-light'>YouTube or Website Link:</label>

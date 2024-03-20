@@ -1,17 +1,20 @@
 import mysql from 'mysql2/promise';
 import multer from 'multer';
 import { app, upload } from '../app.js';
+import 'dotenv/config';
 
 export class RecipeController {
-
+  
   async listAll(req, res) {
     console.log('recipeController should list them all');
     const dbConnection = await this.createDBConnection();
+    const userId = req.userId;
     const [results, fields] = await dbConnection.query(`
             SELECT recipes.*, categories.name AS categoryName
             FROM recipes
             LEFT JOIN categories ON recipes.category = categories.id
-    `);
+            WHERE recipes.user = ?
+    `, [userId]);
     // Transform each recipe to adjust the image path
     const resultsWithWebAccessiblePaths = results.map(recipe => ({
         ...recipe,
@@ -30,16 +33,16 @@ export class RecipeController {
     try {
       const dbConnection = await this.createDBConnection();
       const currentDate = new Date();
-      const sql = 'INSERT INTO recipes (title, ingredients, instructions, image, date, link, category) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      const sql = 'INSERT INTO recipes (title, ingredients, instructions, image, date, link, category, user) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
       // Access form data properly using req.body
       const { title, ingredients, instructions, link, category } = req.body;
-
+      const userId = req.userId;
       // Access uploaded file path through req.file
       const imagePath = req.file ? `/assets/${req.file.filename}` : null;
       console.log('Image Path: ', imagePath);
 
-      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, imagePath, currentDate, link, category]);
+      const [results, fields] = await dbConnection.query(sql, [title, ingredients, instructions, imagePath, currentDate, link, category, userId]);
       res.status(200).json({
         status: 'success',
         message: 'Recipe added to database',
@@ -50,7 +53,7 @@ export class RecipeController {
           image: imagePath,
           date: currentDate,
           link: link,
-          category: categoryId
+          category: category
         }
       });
     } catch (error) {
@@ -111,9 +114,10 @@ export class RecipeController {
 
   async createDBConnection() {
     return mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      database: 'recipes_app'
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD
     });
   }
 }
