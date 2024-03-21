@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRecipeCountForUser } from '../API/recipe-manager';
 
 export default function RecipeCounter ({ recipeCount }) {
    
