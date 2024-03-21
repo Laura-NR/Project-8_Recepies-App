@@ -81,3 +81,16 @@ export const deleteRecipe = async (id, token) => {
     }
 };
 
+//Function to count the number of recipes per user
+export const fetchRecipeCountForUser = async () => {
+    const jwtToken = localStorage.getItem('jwt');
+    if (!jwtToken) return 0; // Return 0 if no jwtToken is found
+
+    try {
+        const recipes = await fetchRecipes(jwtToken); // Use the existing fetchRecipes function
+        return recipes.length; // Return the count of recipes
+    } catch (error) {
+        console.error('Error fetching recipe count:', error);
+        return 0; // Return 0 as a fallback in case of an error
+    }
+};

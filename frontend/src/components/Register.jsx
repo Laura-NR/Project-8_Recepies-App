@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { registerUser } from '../API/user-manager';
 
 export default function Register({ onRegistrationSuccess, switchToLogin }) {
     const [formData, setFormData] = useState({
@@ -17,24 +18,11 @@ export default function Register({ onRegistrationSuccess, switchToLogin }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                alert(data.message);
-                onRegistrationSuccess();
-            } else {
-                const error = await response.json();
-                alert(error.message);
-            }
+            const data = await registerUser(formData);
+            alert(data.message);
+            onRegistrationSuccess();
         } catch (error) {
-            console.error('Failed to register:', error);
+            alert(error.message);
         }
     };
 

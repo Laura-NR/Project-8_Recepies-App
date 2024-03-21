@@ -16,3 +16,29 @@ export const fetchCategories = async () => {
         throw error;
     }
 };
+
+// Function to create a category
+export const createCategory = async (categoryName) => {
+    const jwtToken = localStorage.getItem('jwt');
+    const url = `${import.meta.env.VITE_BACKEND_URL}/categories`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`,
+            },
+            body: JSON.stringify({ name: categoryName }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to add category');
+        }
+
+        return await response.json(); // Return the newly created category
+    } catch (error) {
+        console.error('Error creating category:', error);
+        throw error; // Rethrow the error to be handled by the caller
+    }
+};

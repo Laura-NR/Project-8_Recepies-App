@@ -7,6 +7,7 @@ import TopBar from './components/TopBar';
 import CategoriesDisplay from './components/CategoriesDisplay';
 import { fetchRecipes, deleteRecipe as deleteRecipeAPI } from './API/recipe-manager';
 import { fetchCategories } from './API/category-manager';
+import RecipeCounter from './components/RecipeCounter';
 
 export default function RecipesApp({ onLogout }) {
   const [showForm, setShowForm] = useState(false);
@@ -14,6 +15,7 @@ export default function RecipesApp({ onLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingRecipe, setEditingRecipe] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [isSortedAsc, setIsSortedAsc] = useState(true); // true for ascending, false for descending
 
   useEffect(() => {
     const initCategories = async () => {
@@ -61,6 +63,14 @@ export default function RecipesApp({ onLogout }) {
     recipe.description?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const toggleSortOrder = () => {
+    setIsSortedAsc(!isSortedAsc);
+  };
+
+  const sortedFilteredRecipes = filteredRecipes.sort((a, b) => {
+    return isSortedAsc ? a.id - b.id : b.id - a.id;
+  });
+
   // Method to delete a recipe
   const deleteRecipe = async (id) => {
     const jwtToken = localStorage.getItem('jwt'); // Retrieve the JWT token from local storage
@@ -81,11 +91,15 @@ export default function RecipesApp({ onLogout }) {
         {showForm && !editingRecipe && <AddRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} onRecipesUpdated={refreshRecipes} />}
         {editingRecipe && <UpdateRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
-      <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '-100px' }}>
+      <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '60px' }}>
         <CategoriesDisplay categories={categories} />
       </div>
+      <div style={{ marginLeft: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button onClick={toggleSortOrder} className="btn btn-primary mb-3">&#8645;</button>
+        <RecipeCounter />
+      </div>
       <div className="recipes-grid">
-        <Recipes recipes={filteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} setShowForm={setShowForm} />
+        <Recipes recipes={sortedFilteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} setShowForm={setShowForm} />
       </div>
     </>
   );
