@@ -2,18 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../CategoriesDisplay.css';
 import { updateCategory, deleteCategory } from '../API/category-manager';
 
-function CategoriesDisplay({ categories, onCategoriesChanged }) {
-    const onEditCategory = async (category) => {
-        const newName = prompt("Enter new name for the category:", category.name);
-        if (newName && newName !== category.name) {
-            try {
-                await updateCategory(category.id, newName);
-                onCategoriesChanged(); // Refresh categories list
-            } catch (error) {
-                console.error('Error updating category:', error);
-            }
-        }
-    };
+function CategoriesDisplay({ categories, onCategoriesChanged, startEditingCategory }) {
 
     const onDeleteCategory = async (categoryId) => {
             try {
@@ -32,7 +21,7 @@ function CategoriesDisplay({ categories, onCategoriesChanged }) {
                         <div className="category-content">
                             {category.name}
                             <div className="category-actions">
-                                <button onClick={() => onEditCategory(category)} type="button" style={{background: 'none', padding: '0'}}>✏️</button>
+                                <button onClick={() => startEditingCategory(category)} type="button" style={{background: 'none', padding: '0'}}>✏️</button>
                                 <button onClick={() => onDeleteCategory(category.id)} type="button" style={{background: 'none', padding: '0'}}>🗑️</button>
                             </div>
                         </div>

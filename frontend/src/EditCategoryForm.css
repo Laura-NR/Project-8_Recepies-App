@@ -1,0 +1,22 @@
+.modal-overlay {
+    position: fixed; /* Positioning relative to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    display: flex;
+    justify-content: center; /* Center the modal horizontally */
+    align-items: center; /* Center the modal vertically */
+    z-index: 1000; /* Ensure it's on top of other content */
+  }
+  
+  .modal-content {
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for better UI */
+    z-index: 1001; /* Ensure the modal content is above the overlay */
+    width: 50%; /* or any specific width */
+    max-width: 500px; /* Maximum width */
+  }
+  

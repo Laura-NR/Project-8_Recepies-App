@@ -9,6 +9,7 @@ import { fetchRecipes, deleteRecipe as deleteRecipeAPI } from './API/recipe-mana
 import { fetchCategories } from './API/category-manager';
 import RecipeCounter from './components/RecipeCounter';
 import { fetchRecipeCountForUser } from './API/recipe-manager';
+import EditCategoryForm from './components/EditCategoryForm';
 
 export default function RecipesApp({ onLogout }) {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -17,6 +18,8 @@ export default function RecipesApp({ onLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingRecipe, setEditingRecipe] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [isEditingCategory, setIsEditingCategory] = useState(false);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [isSortedAsc, setIsSortedAsc] = useState(true); // true for ascending, false for descending
   const [recipeCount, setRecipeCount] = useState(0);
 
@@ -36,6 +39,14 @@ export default function RecipesApp({ onLogout }) {
   const handleCategoryAdded = (newCategory) => {
     setCategories(currentCategories => [...currentCategories, newCategory]);
   };
+
+  const startEditingCategory = (category) => {
+    console.log('Start editing category');
+    setCategoryToEdit(category);
+    setIsEditingCategory(true);
+  };
+  console.log(isEditingCategory);
+  console.log(categoryToEdit);
 
   const onCategoriesChanged = async () => {
     try {
@@ -111,7 +122,8 @@ export default function RecipesApp({ onLogout }) {
         {editingRecipe && <UpdateRecipeForm setShowUpdateForm={setShowUpdateForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
       <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '60px' }}>
-        <CategoriesDisplay categories={categories} onCategoriesChanged={onCategoriesChanged} />
+        <CategoriesDisplay categories={categories} onCategoriesChanged={onCategoriesChanged} startEditingCategory={startEditingCategory} isEditingCategory={isEditingCategory} />
+        {isEditingCategory && <EditCategoryForm category={categoryToEdit} onClose={() => setIsEditingCategory(false)} onCategoriesChanged={onCategoriesChanged} />}
       </div>
       <div style={{ marginLeft: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <button onClick={toggleSortOrder} className="btn btn-primary mb-3">&#8645;</button>

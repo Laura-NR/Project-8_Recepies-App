@@ -18,7 +18,7 @@ function TopBar({ setShowAddForm, onSearchChange, onCategoryAdded, onLogout }) {
                     </div>
                     <div className="d-flex align-items-center">
                         <div className="me-3">
-                        <SearchBar onSearchChange={onSearchChange} />
+                            <SearchBar onSearchChange={onSearchChange} />
                         </div>
                         <LogoutButton onLogout={onLogout} />
                     </div>
