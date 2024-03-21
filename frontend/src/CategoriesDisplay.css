@@ -1,4 +1,36 @@
-.categories-display .btn {
+.categories-display .category-content {
     margin-right: 0.5rem; /* Adds space between buttons */
     margin-bottom: 0.5rem; /* Adds space between rows when wrapped */
+    border: 1.5px solid blue;
+    border-radius: 5px;
+    cursor: pointer;
 }
+
+.category-container {
+    transition: all 0.3s ease;
+    overflow: hidden; /* Ensure that overflow is managed */
+}
+
+.category-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    white-space: nowrap; /* Prevents wrapping of text and buttons */
+}
+
+.category-actions {
+    display: none;
+}
+
+.category-container:hover .category-actions {
+    display: inline-flex; /* Use inline-flex to keep buttons in line */
+}
+
+.category-container:hover {
+    /*background-color: #f8f9fa; /* Adjust based on your design */
+    /* Expand the container to fit the actions. Adjust the width as needed or use 'auto' if suitable */
+    width: auto; 
+    max-width: 100%; /* Ensures it does not expand beyond its container */
+}
+

@@ -34,6 +34,15 @@ export default function RecipesApp({ onLogout }) {
     setCategories(currentCategories => [...currentCategories, newCategory]);
   };
 
+  const onCategoriesChanged = async () => {
+    try {
+      const categoriesData = await fetchCategories();
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error('Error refreshing categories:', error);
+    }
+  };
+
   useEffect(() => {
     const init = async () => {
       const jwt = localStorage.getItem('jwt');
@@ -92,7 +101,7 @@ export default function RecipesApp({ onLogout }) {
         {editingRecipe && <UpdateRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
       <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '60px' }}>
-        <CategoriesDisplay categories={categories} />
+        <CategoriesDisplay categories={categories} onCategoriesChanged={onCategoriesChanged} />
       </div>
       <div style={{ marginLeft: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <button onClick={toggleSortOrder} className="btn btn-primary mb-3">&#8645;</button>

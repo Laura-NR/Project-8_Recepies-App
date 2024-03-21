@@ -17,10 +17,14 @@ const categoriesRouter = () => {
     });
 
     // Update a category
-    //router.put('/:id', CategoryController.update);
+    router.put('/:id', verifyToken, function (req, res) {
+        categoryController.update(req, res);  
+    });
 
     // Delete a category
-    //router.delete('/:id', CategoryController.destroy);
+    router.delete('/:id', verifyToken, function (req, res) {
+        categoryController.delete(req, res);
+    });
 
     return router;
 }

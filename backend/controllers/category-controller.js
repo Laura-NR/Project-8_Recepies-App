@@ -34,6 +34,45 @@ export class CategoryController {
         }
     }
 
+    async update(req, res) {
+        const { id } = req.params; // Assuming you pass the category ID as a URL parameter
+        const { name } = req.body; // New name of the category
+        const userId = req.userId; // Assuming you have middleware to set this from token
+    
+        try {
+            const dbConnection = await this.createDBConnection();
+            const updateSql = 'UPDATE categories SET name = ? WHERE id = ? AND user = ?';
+            await dbConnection.query(updateSql, [name, id, userId]);
+    
+            // Fetch the updated category to return it
+            const selectSql = 'SELECT * FROM categories WHERE id = ? AND user = ?';
+            const [results] = await dbConnection.query(selectSql, [id, userId]);
+    
+            if (results.length > 0) {
+                res.json(results[0]);
+            } else {
+                res.status(404).json({ message: 'Category not found or you do not have permission to edit it.' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating category: ' + error.message });
+        }
+    }
+    
+    async delete(req, res) {
+        const { id } = req.params; // Category ID from URL
+        const userId = req.userId; // User ID from token
+    
+        try {
+            const dbConnection = await this.createDBConnection();
+            const deleteSql = 'DELETE FROM categories WHERE id = ? AND user = ?';
+            await dbConnection.query(deleteSql, [id, userId]);
+            
+            res.json({ message: 'Category deleted successfully.' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting category: ' + error.message });
+        }
+    }    
+
 
     async createDBConnection() {
         return mysql.createConnection({
