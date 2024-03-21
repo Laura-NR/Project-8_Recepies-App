@@ -9,23 +9,44 @@ export class RecipeController {
     console.log('recipeController should list them all');
     const dbConnection = await this.createDBConnection();
     const userId = req.userId;
-    const [results, fields] = await dbConnection.query(`
-            SELECT recipes.*, categories.name AS categoryName
-            FROM recipes
-            LEFT JOIN categories ON recipes.category = categories.id
-            WHERE recipes.user = ?
-    `, [userId]);
-    // Transform each recipe to adjust the image path
-    const resultsWithWebAccessiblePaths = results.map(recipe => ({
+  
+    // Step 1: Extract the category filter from query parameters
+    const categoryId = req.query.category;
+  
+    // Modify the SQL query to conditionally include a category filter
+    let sqlQuery = `
+      SELECT recipes.*, categories.name AS categoryName
+      FROM recipes
+      LEFT JOIN categories ON recipes.category = categories.id
+      WHERE recipes.user = ?
+    `;
+  
+    // An array to hold parameters for the SQL query
+    let queryParams = [userId];
+  
+    // Step 2: If a category filter is provided, append it to the SQL query
+    if (categoryId) {
+      sqlQuery += " AND recipes.category = ?";
+      queryParams.push(categoryId); // Add the category ID to the query parameters
+    }
+  
+    try {
+      const [results, fields] = await dbConnection.query(sqlQuery, queryParams);
+  
+      // Transform each recipe to adjust the image path
+      const resultsWithWebAccessiblePaths = results.map(recipe => ({
         ...recipe,
-        // Assuming 'image' contains the filesystem path, replace it with a relative web path
-        // This assumes your images are served from /assets and stored with filenames in the DB
         image: recipe.image ? recipe.image.replace(/^.*[\\\/]/, '/assets/') : null
-    }));
-
-    console.log(resultsWithWebAccessiblePaths);
-    res.json(resultsWithWebAccessiblePaths);
+      }));
+  
+      console.log(resultsWithWebAccessiblePaths);
+      res.json(resultsWithWebAccessiblePaths);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      res.status(500).json('Error fetching recipes: ' + error.message);
+    }
   }
+  
 
   async create(req, res) {
     console.log("Create controller Function:");

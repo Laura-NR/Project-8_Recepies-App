@@ -1,7 +1,11 @@
 //Method to retrieve the recipes
-export const fetchRecipes = async (token) => {
+export const fetchRecipes = async (token, categoryId = '') => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/recipes`, {
+        let url = `${import.meta.env.VITE_BACKEND_URL}/recipes`;
+        if (categoryId !== '' && categoryId !== 'All') {
+            url += `?category=${categoryId}`; // Assuming your backend supports this query parameter
+        }
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -16,6 +20,7 @@ export const fetchRecipes = async (token) => {
         return []; // Return an empty array in case of any error
     }
 };
+
 
 //Create a new recipe
 export const createRecipe = async (formData, token) => {

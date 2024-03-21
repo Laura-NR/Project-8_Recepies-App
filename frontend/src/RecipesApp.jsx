@@ -22,6 +22,7 @@ export default function RecipesApp({ onLogout }) {
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [isSortedAsc, setIsSortedAsc] = useState(true); // true for ascending, false for descending
   const [recipeCount, setRecipeCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
     const initCategories = async () => {
@@ -75,11 +76,16 @@ export default function RecipesApp({ onLogout }) {
     init();
   }, []);
 
-  const refreshRecipes = async () => {
+  const refreshRecipes = async (categoryId = 'All') => {
     const jwtToken = localStorage.getItem('jwt');
-    const updatedRecipes = await fetchRecipes(jwtToken); // Assuming this fetches the updated list correctly
+    const updatedRecipes = await fetchRecipes(jwtToken, categoryId); // Assuming fetchRecipes supports category ID filtering
     setRecipes(updatedRecipes);
   };
+
+  const handleCategoryFilterChange = (categoryId) => {
+    // Call the function to refresh recipes with the selected category ID
+    refreshRecipes(categoryId);
+  };  
 
   const handleSearchChange = (newSearchTerm) => {
     setSearchTerm(newSearchTerm.toLowerCase());
@@ -120,7 +126,7 @@ export default function RecipesApp({ onLogout }) {
         {showUpdateForm && editingRecipe && <UpdateRecipeForm setShowUpdateForm={setShowUpdateForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
       <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '60px' }}>
-        <CategoriesDisplay categories={categories} onCategoriesChanged={onCategoriesChanged} startEditingCategory={startEditingCategory} isEditingCategory={isEditingCategory} />
+        <CategoriesDisplay categories={categories} onCategoriesChanged={onCategoriesChanged} startEditingCategory={startEditingCategory} isEditingCategory={isEditingCategory} handleCategoryFilterChange={handleCategoryFilterChange} />
         {isEditingCategory && <EditCategoryForm category={categoryToEdit} onClose={() => setIsEditingCategory(false)} onCategoriesChanged={onCategoriesChanged} />}
       </div>
       <div style={{ marginLeft: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
