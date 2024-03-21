@@ -4,8 +4,10 @@ import SingleRecipe from './SingleRecipe'; // Import the new component
 import '../recipes.css';
 
 // Now Recipes accepts a `recipes` prop instead of fetching data itself
-export default function Recipes({ recipes, onDelete, setEditingRecipe }) {
+export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowForm }) {
     const [selectedRecipe, setSelectedRecipe] = useState(null); // State to track the selected recipe
+
+    const handleclick = () => {setShowForm(true)};
 
     return (
         <>
@@ -18,7 +20,7 @@ export default function Recipes({ recipes, onDelete, setEditingRecipe }) {
                                 <img src={imageUrl} alt={recipe.title} />
                                 <div className="card-body">
                                     <h5 className="card-title">{recipe.title}</h5>
-                                    <button className='recipes-button' onClick={(e) => {e.stopPropagation(); setEditingRecipe(recipe) }}>✏️</button>
+                                    <button className='recipes-button' onClick={(e) => {e.stopPropagation(); handleclick; setEditingRecipe(recipe) }}>✏️</button>
                                     <button className='recipes-button' onClick={(e) => {e.stopPropagation(); onDelete(recipe.id); }}>🗑️</button>
                                 </div>
                             </div>

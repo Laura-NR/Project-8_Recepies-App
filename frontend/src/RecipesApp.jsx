@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import AddRecipeForm from './components/AddRecipeForm';
+import UpdateRecipeForm from './components/UpdateRecipeForm';
 import Recipes from './components/recipes';
 import TopBar from './components/TopBar';
 import CategoriesDisplay from './components/CategoriesDisplay';
 import { fetchRecipes, deleteRecipe as deleteRecipeAPI } from './API/recipe-manager';
+import { fetchCategories } from './API/category-manager';
 
 export default function RecipesApp({ onLogout }) {
   const [showForm, setShowForm] = useState(false);
@@ -14,27 +16,17 @@ export default function RecipesApp({ onLogout }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const jwt = localStorage.getItem('jwt'); // Retrieve the stored token
+    const initCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3000/categories', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${jwt}`, // Include the token in the Authorization header
-            'Content-Type': 'application/json'
-          }
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories');
-        }
-        const categories = await response.json();
-        setCategories(categories);
+        const categoriesData = await fetchCategories();
+        setCategories(categoriesData);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error initializing categories:', error);
       }
     };
-    fetchCategories();
+    initCategories();
   }, []);
+
 
   const handleCategoryAdded = (newCategory) => {
     setCategories(currentCategories => [...currentCategories, newCategory]);
@@ -54,6 +46,11 @@ export default function RecipesApp({ onLogout }) {
     init();
   }, []);
 
+  const refreshRecipes = async () => {
+    const jwtToken = localStorage.getItem('jwt');
+    const updatedRecipes = await fetchRecipes(jwtToken); // Assuming this fetches the updated list correctly
+    setRecipes(updatedRecipes);
+  };
 
   const handleSearchChange = (newSearchTerm) => {
     setSearchTerm(newSearchTerm.toLowerCase());
@@ -81,13 +78,14 @@ export default function RecipesApp({ onLogout }) {
     <>
       <div>
         <TopBar setShowForm={setShowForm} onSearchChange={handleSearchChange} onCategoryAdded={handleCategoryAdded} onLogout={onLogout} />
-        {showForm || editingRecipe ? <AddRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} /> : null}
+        {showForm && !editingRecipe && <AddRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} onRecipesUpdated={refreshRecipes} />}
+        {editingRecipe && <UpdateRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
       <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '-100px' }}>
         <CategoriesDisplay categories={categories} />
       </div>
       <div className="recipes-grid">
-        <Recipes recipes={filteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} />
+        <Recipes recipes={filteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} setShowForm={setShowForm} />
       </div>
     </>
   );

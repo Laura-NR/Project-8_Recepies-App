@@ -1,25 +1,18 @@
-import { useState, useEffect } from 'react';
-import NewRecipe from './NewRecipe';
-import '../AddRecipeForm.css';
+import React, { useState, useEffect } from 'react';
+import { updateRecipe } from '../API/recipe-manager';
 import { fetchCategories } from '../API/category-manager';
-import { createRecipe } from '../API/recipe-manager';
 
-export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpdated }) {
-    const [formData, setFormData] = useState({
-        title: '',
-        ingredients: '',
-        instructions: '',
-        picture: null, // For file upload
-        link: '',
-        categoryId: '',
-    });
-    const [categories, setCategories] = useState([]);;
+export default function UpdateRecipeForm({ setShowForm, editingRecipe, onRecipesUpdated, fetchRecipes }) {
+    const [formData, setFormData] = useState(editingRecipe || {});
+    const [categories, setCategories] = useState([]);
+
+    console.log('Recipe to be updated: ', formData);
 
     useEffect(() => {
         const loadCategories = async () => {
             try {
                 const categoriesData = await fetchCategories();
-                setCategories(categoriesData);
+                setCategories(categoriesData); // Set categories state
             } catch (error) {
                 console.error('Failed to load categories:', error);
             }
@@ -28,44 +21,34 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpda
         loadCategories();
     }, []);
 
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         const jwtToken = localStorage.getItem('jwt');
-        // Assuming createRecipe returns the newly created recipe on success
         try {
-            const newRecipe = await createRecipe(formData, jwtToken);
-            if (newRecipe) {
-                await onRecipesUpdated(); // Call the passed callback to refresh the recipes list
+            const updatedRecipe = await updateRecipe(formData, editingRecipe.id, jwtToken);
+            if (updatedRecipe) {
+                await onRecipesUpdated();
                 setShowForm(false);
             }
-            // Assuming fetchRecipes is a function that sets state with updated recipes
             /*fetchRecipes(jwtToken).then(() => {
-                // Now that state is updated with the new recipe, no need to refresh
-                // Close the modal or indicate success to the user
                 setShowForm(false);
             });*/
         } catch (error) {
-            console.error('Error creating recipe:', error);
-            // Handle the error, maybe notify the user
+            console.error('Error updating recipe:', error);
         }
     };
 
+    // Handle change function to update formData state
+
     const handleChange = (event) => {
         const { name, value, files } = event.target;
-        if (files) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: files[0],
-            }));
-        } else {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: value,
-            }));
-        }
+        const updatedValue = files ? files[0] : value;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: updatedValue,
+        }));
     };
+
 
     return (
         <div className="modal-overlay">
@@ -131,7 +114,7 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpda
                         onChange={handleChange}
                     />
 
-                    <button type="submit" className='btn btn-success mt-4'>Save Recipe</button>
+                    <button type="submit" className='btn btn-success mt-4'>Update Recipe</button>
                 </form>
             </div>
         </div>
