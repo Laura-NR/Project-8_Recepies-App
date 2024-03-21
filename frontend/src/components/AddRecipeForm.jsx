@@ -4,7 +4,7 @@ import '../AddRecipeForm.css';
 import { fetchCategories } from '../API/category-manager';
 import { createRecipe } from '../API/recipe-manager';
 
-export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpdated }) {
+export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpdated, refreshRecipeCount }) {
     const [formData, setFormData] = useState({
         title: '',
         ingredients: '',
@@ -37,7 +37,8 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpda
         try {
             const newRecipe = await createRecipe(formData, jwtToken);
             if (newRecipe) {
-                await onRecipesUpdated(); // Call the passed callback to refresh the recipes list
+                await onRecipesUpdated(); // Call the passed callback to refresh the recipes 
+                await refreshRecipeCount();
                 setShowForm(false);
             }
             // Assuming fetchRecipes is a function that sets state with updated recipes
