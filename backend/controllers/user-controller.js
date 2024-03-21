@@ -4,7 +4,7 @@ import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
 export class UserController {
-    // Establish DB connection (assuming you're using MySQL)
+    // Establish DB connection
     async createDBConnection() {
         return mysql.createConnection({
             host: process.env.DB_HOST,

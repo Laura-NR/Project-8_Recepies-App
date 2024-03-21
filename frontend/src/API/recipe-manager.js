@@ -3,7 +3,7 @@ export const fetchRecipes = async (token, categoryId = '') => {
     try {
         let url = `${import.meta.env.VITE_BACKEND_URL}/recipes`;
         if (categoryId !== '' && categoryId !== 'All') {
-            url += `?category=${categoryId}`; // Assuming your backend supports this query parameter
+            url += `?category=${categoryId}`;
         }
         const response = await fetch(url, {
             method: 'GET',
@@ -86,16 +86,4 @@ export const deleteRecipe = async (id, token) => {
     }
 };
 
-//Function to count the number of recipes per user
-export const fetchRecipeCountForUser = async () => {
-    const jwtToken = localStorage.getItem('jwt');
-    if (!jwtToken) return 0; // Return 0 if no jwtToken is found
 
-    try {
-        const recipes = await fetchRecipes(jwtToken); // Use the existing fetchRecipes function
-        return recipes.length; // Return the count of recipes
-    } catch (error) {
-        console.error('Error fetching recipe count:', error);
-        return 0; // Return 0 as a fallback in case of an error
-    }
-};

@@ -10,7 +10,7 @@ export class RecipeController {
     const dbConnection = await this.createDBConnection();
     const userId = req.userId;
   
-    // Step 1: Extract the category filter from query parameters
+    //Extract the category filter from query parameters
     const categoryId = req.query.category;
   
     // Modify the SQL query to conditionally include a category filter
@@ -21,19 +21,19 @@ export class RecipeController {
       WHERE recipes.user = ?
     `;
   
-    // An array to hold parameters for the SQL query
+    // Array to hold parameters for the SQL query
     let queryParams = [userId];
   
-    // Step 2: If a category filter is provided, append it to the SQL query
+    // If a category filter is provided, append to SQL query
     if (categoryId) {
       sqlQuery += " AND recipes.category = ?";
-      queryParams.push(categoryId); // Add the category ID to the query parameters
+      queryParams.push(categoryId); // Add category ID to query parameters
     }
   
     try {
       const [results, fields] = await dbConnection.query(sqlQuery, queryParams);
   
-      // Transform each recipe to adjust the image path
+      // Transform recipes to adjust image path
       const resultsWithWebAccessiblePaths = results.map(recipe => ({
         ...recipe,
         image: recipe.image ? recipe.image.replace(/^.*[\\\/]/, '/assets/') : null
@@ -56,7 +56,7 @@ export class RecipeController {
       const currentDate = new Date();
       const sql = 'INSERT INTO recipes (title, ingredients, instructions, image, date, link, category, user) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-      // Access form data properly using req.body
+      // Access form data using req.body
       const { title, ingredients, instructions, link, category } = req.body;
       const userId = req.userId;
       // Access uploaded file path through req.file
@@ -101,7 +101,7 @@ export class RecipeController {
 
   async update(req, res) {
     const { id } = req.params;
-    // Destructure fields from req.body
+    
     const { title, ingredients, instructions, link, category } = req.body;
     
     // Check for an uploaded file
@@ -109,7 +109,7 @@ export class RecipeController {
 
     const dbConnection = await this.createDBConnection();
     try {
-        // Construct your SQL query to conditionally include the image path if a new image was uploaded
+        // Conditionally include the image path if a new image was uploaded
         let query = 'UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, link = ?, category = ?';
         const queryParams = [title, ingredients, instructions, link, category];
 

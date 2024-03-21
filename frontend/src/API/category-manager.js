@@ -1,5 +1,5 @@
 export const fetchCategories = async () => {
-    const jwtToken = localStorage.getItem('jwt'); // Assuming the JWT token is stored in local storage
+    const jwtToken = localStorage.getItem('jwt'); 
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
             headers: {
@@ -39,7 +39,7 @@ export const createCategory = async (categoryName) => {
         return await response.json(); // Return the newly created category
     } catch (error) {
         console.error('Error creating category:', error);
-        throw error; // Rethrow the error to be handled by the caller
+        throw error; 
     }
 };
 
@@ -81,7 +81,6 @@ export const deleteCategory = async (categoryId) => {
         });
 
         if (!response.ok) {
-            // Try parsing JSON first, but fall back to text if it fails
             let message;
             try {
                 const data = await response.json();
@@ -91,9 +90,6 @@ export const deleteCategory = async (categoryId) => {
             }
             throw new Error('Failed to delete category: ' + message);
         }
-
-        // If the response is ok, and you expect JSON, ensure to return it.
-        // If you don't expect a body, you might not need to parse JSON here.
         return await response.json(); 
     } catch (error) {
         console.error('Error deleting category:', error);

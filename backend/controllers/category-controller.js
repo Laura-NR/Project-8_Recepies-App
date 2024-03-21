@@ -8,18 +8,18 @@ export class CategoryController {
         const userId = req.userId;
         const [results, fields] = await dbConnection.query('SELECT * FROM categories WHERE user = ?', [userId]);
         console.log(results);
-        res.json(results); // Send back the query results to the client
+        res.json(results); // Send back query results to client
     }
 
     async create(req, res) {
-        const { name } = req.body; // Assume categories have only a name for simplicity
-        const userId = req.userId; // Assuming you have middleware to set this from token
+        const { name } = req.body; 
+        const userId = req.userId; 
         try {
             const dbConnection = await this.createDBConnection();
             const insertSql = 'INSERT INTO categories (name, user) VALUES (?, ?)';
             await dbConnection.query(insertSql, [name, userId]);
 
-            // Assuming 'name' is unique per user, or add more conditions to uniquely identify the category
+            
             const selectSql = 'SELECT * FROM categories WHERE user = ? AND name = ? ORDER BY id DESC LIMIT 1';
             const [results] = await dbConnection.query(selectSql, [userId, name]);
 
@@ -35,16 +35,16 @@ export class CategoryController {
     }
 
     async update(req, res) {
-        const { id } = req.params; // Assuming you pass the category ID as a URL parameter
-        const { name } = req.body; // New name of the category
-        const userId = req.userId; // Assuming you have middleware to set this from token
+        const { id } = req.params; 
+        const { name } = req.body; 
+        const userId = req.userId; 
     
         try {
             const dbConnection = await this.createDBConnection();
             const updateSql = 'UPDATE categories SET name = ? WHERE id = ? AND user = ?';
             await dbConnection.query(updateSql, [name, id, userId]);
     
-            // Fetch the updated category to return it
+            // Fetch updated category to return it
             const selectSql = 'SELECT * FROM categories WHERE id = ? AND user = ?';
             const [results] = await dbConnection.query(selectSql, [id, userId]);
     

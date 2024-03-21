@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import SingleRecipe from './SingleRecipe'; // Import the new component
+import SingleRecipe from './SingleRecipe'; 
 import '../recipes.css';
 
-// Now Recipes accepts a `recipes` prop instead of fetching data itself
+
 export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowUpdateForm }) {
     const [selectedRecipe, setSelectedRecipe] = useState(null); // State to track the selected recipe
 
@@ -29,7 +29,7 @@ export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowUp
                         );
                     })
                 ) : (
-                    <p>Loading recipes...</p> // Or any other loading indicator
+                    <p>Loading recipes...</p> 
                 )}
             </div>
             {selectedRecipe && <SingleRecipe recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />}

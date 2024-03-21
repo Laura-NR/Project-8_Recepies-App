@@ -1,6 +1,6 @@
-import React from 'react'; // Assuming you have these components
+import React from 'react'; 
 import '../TopBar.css';
-import SearchBar from './SearchBar'; // And your custom search bar
+import SearchBar from './SearchBar'; 
 import NewRecipe from './NewRecipe';
 import Categories from './categories';
 import LogoutButton from './LogoutButton';

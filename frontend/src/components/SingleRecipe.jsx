@@ -1,5 +1,5 @@
 import React from 'react';
-import '../singleRecipe.css'; // Ensure you have CSS for styling the modal
+import '../singleRecipe.css'; 
 
 function SingleRecipe({ recipe, onClose }) {
     // Construct the full URL for the image

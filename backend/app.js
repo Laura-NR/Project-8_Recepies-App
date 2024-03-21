@@ -34,12 +34,9 @@ const upload = multer({
   limits: { fileSize: 10000000 },
 });
 
-// Apply multer middleware to parse form data
+// Multer middleware to parse form data
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-// Apply multer middleware to handle all form submissions together
-//app.use(upload.any()); // Middleware to handle all form submissions together, including files
 
 //Serving image files with express.static
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));

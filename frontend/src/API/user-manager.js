@@ -16,7 +16,7 @@ export const registerUser = async (formData) => {
         return await response.json(); // Return the response data
     } catch (error) {
         console.error('Registration error:', error);
-        throw error; // Re-throw the error so it can be caught in the component
+        throw error; 
     }
 };
 
@@ -38,6 +38,6 @@ export const loginUser = async (formData) => {
         return await response.json(); // Return the response data including JWT
     } catch (error) {
         console.error('Login error:', error);
-        throw error; // Re-throw the error so it can be caught in the component
+        throw error; 
     }
 };

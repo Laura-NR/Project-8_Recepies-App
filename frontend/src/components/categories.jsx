@@ -12,10 +12,8 @@ export default function Categories({ onCategoryAdded }) {
             console.log('Category added:', newCategory);
             onCategoryAdded(newCategory);
             setCategoryName('');
-            // Optionally, refresh categories list to include the new category
         } catch (error) {
             console.error('Error submitting form:', error);
-            // Optionally, handle the error in the UI
         }
     };    
 

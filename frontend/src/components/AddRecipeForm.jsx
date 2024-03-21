@@ -4,7 +4,7 @@ import '../AddRecipeForm.css';
 import { fetchCategories } from '../API/category-manager';
 import { createRecipe } from '../API/recipe-manager';
 
-export default function AddRecipeForm({ setShowAddForm, fetchRecipes, onRecipesUpdated, refreshRecipeCount }) {
+export default function AddRecipeForm({ setShowAddForm, fetchRecipes, onRecipesUpdated }) {
     const [formData, setFormData] = useState({
         title: '',
         ingredients: '',
@@ -33,23 +33,14 @@ export default function AddRecipeForm({ setShowAddForm, fetchRecipes, onRecipesU
         event.preventDefault();
 
         const jwtToken = localStorage.getItem('jwt');
-        // Assuming createRecipe returns the newly created recipe on success
         try {
             const newRecipe = await createRecipe(formData, jwtToken);
             if (newRecipe) {
-                await onRecipesUpdated(); // Call the passed callback to refresh the recipes 
-                await refreshRecipeCount();
+                await onRecipesUpdated(); 
                 setShowAddForm(false);
             }
-            // Assuming fetchRecipes is a function that sets state with updated recipes
-            /*fetchRecipes(jwtToken).then(() => {
-                // Now that state is updated with the new recipe, no need to refresh
-                // Close the modal or indicate success to the user
-                setShowAddForm(false);
-            });*/
         } catch (error) {
             console.error('Error creating recipe:', error);
-            // Handle the error, maybe notify the user
         }
     };
 
@@ -110,10 +101,10 @@ export default function AddRecipeForm({ setShowAddForm, fetchRecipes, onRecipesU
                         onChange={handleChange}
                     />
 
-                    <div className="mb-3"> {/* Bootstrap form group */}
+                    <div className="mb-3"> 
                         <label htmlFor="categoryId" className="form-label text-light">Category:</label>
                         <select className="form-select" name="categoryId" value={formData.categoryId} onChange={handleChange}>
-                            <option value="">Select a category</option> {/* Default option */}
+                            <option value="">Select a category</option> 
                             {categories.map((category) => (
                                 <option key={category.id} value={category.id}>
                                     {category.name}

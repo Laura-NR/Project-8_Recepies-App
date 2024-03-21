@@ -36,7 +36,6 @@ export default function UpdateRecipeForm({ setShowUpdateForm, editingRecipe, onR
     };
 
     // Handle change function to update formData state
-
     const handleChange = (event) => {
         const { name, value, files } = event.target;
         const updatedValue = files ? files[0] : value;
@@ -89,10 +88,10 @@ export default function UpdateRecipeForm({ setShowUpdateForm, editingRecipe, onR
                         onChange={handleChange}
                     />
 
-                    <div className="mb-3"> {/* Bootstrap form group */}
+                    <div className="mb-3"> 
                         <label htmlFor="categoryId" className="form-label text-light">Category:</label>
                         <select className="form-select" name="categoryId" value={formData.categoryId} onChange={handleChange}>
-                            <option value="">Select a category</option> {/* Default option */}
+                            <option value="">Select a category</option> 
                             {categories.map((category) => (
                                 <option key={category.id} value={category.id}>
                                     {category.name}

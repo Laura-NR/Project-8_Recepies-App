@@ -8,7 +8,6 @@ import CategoriesDisplay from './components/CategoriesDisplay';
 import { fetchRecipes, deleteRecipe as deleteRecipeAPI } from './API/recipe-manager';
 import { fetchCategories } from './API/category-manager';
 import RecipeCounter from './components/RecipeCounter';
-import { fetchRecipeCountForUser } from './API/recipe-manager';
 import EditCategoryForm from './components/EditCategoryForm';
 
 export default function RecipesApp({ onLogout }) {
@@ -21,7 +20,6 @@ export default function RecipesApp({ onLogout }) {
   const [isEditingCategory, setIsEditingCategory] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [isSortedAsc, setIsSortedAsc] = useState(true); // true for ascending, false for descending
-  const [recipeCount, setRecipeCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
@@ -56,13 +54,7 @@ export default function RecipesApp({ onLogout }) {
     }
   };
 
-  const refreshRecipeCount = async () => {
-    const count = await fetchRecipeCountForUser();
-    setRecipeCount(count);
-  };
-
   useEffect(() => {
-    refreshRecipeCount();
     const init = async () => {
       const jwt = localStorage.getItem('jwt');
       try {
@@ -78,7 +70,7 @@ export default function RecipesApp({ onLogout }) {
 
   const refreshRecipes = async (categoryId = 'All') => {
     const jwtToken = localStorage.getItem('jwt');
-    const updatedRecipes = await fetchRecipes(jwtToken, categoryId); // Assuming fetchRecipes supports category ID filtering
+    const updatedRecipes = await fetchRecipes(jwtToken, categoryId); 
     setRecipes(updatedRecipes);
   };
 
@@ -111,18 +103,18 @@ export default function RecipesApp({ onLogout }) {
     if (success) {
       // Update the local state to remove the deleted recipe if delete was successful
       setRecipes((currentRecipes) => currentRecipes.filter((recipe) => recipe.id !== id));
-      await refreshRecipeCount();
     } else {
       console.error('Failed to delete recipe');
     }
   };
 
+  const displayedRecipeCount = sortedFilteredRecipes.length;
 
   return (
     <>
       <div>
         <TopBar setShowAddForm={setShowAddForm} onSearchChange={handleSearchChange} onCategoryAdded={handleCategoryAdded} onLogout={onLogout} />
-        {showAddForm && !editingRecipe && <AddRecipeForm setShowAddForm={setShowAddForm} fetchRecipes={fetchRecipes} onRecipesUpdated={refreshRecipes} refreshRecipeCount={refreshRecipeCount} />}
+        {showAddForm && !editingRecipe && <AddRecipeForm setShowAddForm={setShowAddForm} fetchRecipes={fetchRecipes} onRecipesUpdated={refreshRecipes} />}
         {showUpdateForm && editingRecipe && <UpdateRecipeForm setShowUpdateForm={setShowUpdateForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
       <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '60px' }}>
@@ -131,7 +123,7 @@ export default function RecipesApp({ onLogout }) {
       </div>
       <div style={{ marginLeft: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <button onClick={toggleSortOrder} className="btn btn-primary mb-3">&#8645;</button>
-        <RecipeCounter  recipeCount={recipeCount} />
+        <RecipeCounter  recipeCount={displayedRecipeCount} />
       </div>
       <div className="recipes-grid">
         <Recipes recipes={sortedFilteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} setShowUpdateForm={setShowUpdateForm} />
