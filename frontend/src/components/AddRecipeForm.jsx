@@ -4,7 +4,7 @@ import '../AddRecipeForm.css';
 import { fetchCategories } from '../API/category-manager';
 import { createRecipe } from '../API/recipe-manager';
 
-export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpdated, refreshRecipeCount }) {
+export default function AddRecipeForm({ setShowAddForm, fetchRecipes, onRecipesUpdated, refreshRecipeCount }) {
     const [formData, setFormData] = useState({
         title: '',
         ingredients: '',
@@ -39,13 +39,13 @@ export default function AddRecipeForm({ setShowForm, fetchRecipes, onRecipesUpda
             if (newRecipe) {
                 await onRecipesUpdated(); // Call the passed callback to refresh the recipes 
                 await refreshRecipeCount();
-                setShowForm(false);
+                setShowAddForm(false);
             }
             // Assuming fetchRecipes is a function that sets state with updated recipes
             /*fetchRecipes(jwtToken).then(() => {
                 // Now that state is updated with the new recipe, no need to refresh
                 // Close the modal or indicate success to the user
-                setShowForm(false);
+                setShowAddForm(false);
             });*/
         } catch (error) {
             console.error('Error creating recipe:', error);

@@ -5,14 +5,14 @@ import NewRecipe from './NewRecipe';
 import Categories from './categories';
 import LogoutButton from './LogoutButton';
 
-function TopBar({ setShowForm, onSearchChange, onCategoryAdded, onLogout }) {
+function TopBar({ setShowAddForm, onSearchChange, onCategoryAdded, onLogout }) {
     return (
         <div className="top-bar">
             <div className="container-fluid">
                 <div className="d-flex justify-content-between">
                     <div className="d-flex align-items-center">
                         <div className="me-5">
-                            <NewRecipe handleButtonClick={() => setShowForm(true)} />
+                            <NewRecipe handleButtonClick={() => setShowAddForm(true)} />
                         </div>
                         <Categories onCategoryAdded={onCategoryAdded} />
                     </div>

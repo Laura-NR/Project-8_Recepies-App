@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { updateRecipe } from '../API/recipe-manager';
 import { fetchCategories } from '../API/category-manager';
 
-export default function UpdateRecipeForm({ setShowForm, editingRecipe, onRecipesUpdated, fetchRecipes }) {
+export default function UpdateRecipeForm({ setShowUpdateForm, editingRecipe, onRecipesUpdated, fetchRecipes }) {
     const [formData, setFormData] = useState(editingRecipe || {});
     const [categories, setCategories] = useState([]);
 
@@ -28,10 +28,10 @@ export default function UpdateRecipeForm({ setShowForm, editingRecipe, onRecipes
             const updatedRecipe = await updateRecipe(formData, editingRecipe.id, jwtToken);
             if (updatedRecipe) {
                 await onRecipesUpdated();
-                setShowForm(false);
+                setShowUpdateForm(false);
             }
             /*fetchRecipes(jwtToken).then(() => {
-                setShowForm(false);
+                setShowUpdateForm(false);
             });*/
         } catch (error) {
             console.error('Error updating recipe:', error);

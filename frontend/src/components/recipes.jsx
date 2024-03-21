@@ -4,10 +4,10 @@ import SingleRecipe from './SingleRecipe'; // Import the new component
 import '../recipes.css';
 
 // Now Recipes accepts a `recipes` prop instead of fetching data itself
-export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowForm }) {
+export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowUpdateForm }) {
     const [selectedRecipe, setSelectedRecipe] = useState(null); // State to track the selected recipe
 
-    const handleclick = () => {setShowForm(true)};
+    const handleclick = () => {setShowUpdateForm(true)};
 
     return (
         <>

@@ -11,7 +11,8 @@ import RecipeCounter from './components/RecipeCounter';
 import { fetchRecipeCountForUser } from './API/recipe-manager';
 
 export default function RecipesApp({ onLogout }) {
-  const [showForm, setShowForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [recipes, setRecipes] = useState([]); // State to hold recipes data
   const [searchTerm, setSearchTerm] = useState('');
   const [editingRecipe, setEditingRecipe] = useState(null);
@@ -105,9 +106,9 @@ export default function RecipesApp({ onLogout }) {
   return (
     <>
       <div>
-        <TopBar setShowForm={setShowForm} onSearchChange={handleSearchChange} onCategoryAdded={handleCategoryAdded} onLogout={onLogout} />
-        {showForm && !editingRecipe && <AddRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} onRecipesUpdated={refreshRecipes} refreshRecipeCount={refreshRecipeCount} />}
-        {editingRecipe && <UpdateRecipeForm setShowForm={setShowForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
+        <TopBar setShowAddForm={setShowAddForm} onSearchChange={handleSearchChange} onCategoryAdded={handleCategoryAdded} onLogout={onLogout} />
+        {showAddForm && !editingRecipe && <AddRecipeForm setShowAddForm={setShowAddForm} fetchRecipes={fetchRecipes} onRecipesUpdated={refreshRecipes} refreshRecipeCount={refreshRecipeCount} />}
+        {editingRecipe && <UpdateRecipeForm setShowUpdateForm={setShowUpdateForm} fetchRecipes={fetchRecipes} editingRecipe={editingRecipe} setEditingRecipe={setEditingRecipe} onRecipesUpdated={refreshRecipes} />}
       </div>
       <div className="categories-display container mb-4" style={{ marginLeft: '20%', marginTop: '60px' }}>
         <CategoriesDisplay categories={categories} onCategoriesChanged={onCategoriesChanged} />
@@ -117,7 +118,7 @@ export default function RecipesApp({ onLogout }) {
         <RecipeCounter  recipeCount={recipeCount} />
       </div>
       <div className="recipes-grid">
-        <Recipes recipes={sortedFilteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} setShowForm={setShowForm} />
+        <Recipes recipes={sortedFilteredRecipes} onDelete={deleteRecipe} setEditingRecipe={setEditingRecipe} setShowUpdateForm={setShowUpdateForm} />
       </div>
     </>
   );
