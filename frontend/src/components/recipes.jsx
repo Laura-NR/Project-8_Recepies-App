@@ -7,7 +7,9 @@ import '../recipes.css';
 export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowUpdateForm }) {
     const [selectedRecipe, setSelectedRecipe] = useState(null); // State to track the selected recipe
 
-    const handleclick = () => {setShowUpdateForm(true)};
+    const handleclick = () => {
+        setShowUpdateForm(true);
+    };
 
     return (
         <>
@@ -20,7 +22,7 @@ export default function Recipes({ recipes, onDelete, setEditingRecipe, setShowUp
                                 <img src={imageUrl} alt={recipe.title} />
                                 <div className="card-body">
                                     <h5 className="card-title">{recipe.title}</h5>
-                                    <button className='recipes-button' onClick={(e) => {e.stopPropagation(); handleclick; setEditingRecipe(recipe) }}>✏️</button>
+                                    <button className='recipes-button' onClick={(e) => {e.stopPropagation(); handleclick(); setEditingRecipe(recipe) }}>✏️</button>
                                     <button className='recipes-button' onClick={(e) => {e.stopPropagation(); onDelete(recipe.id); }}>🗑️</button>
                                 </div>
                             </div>

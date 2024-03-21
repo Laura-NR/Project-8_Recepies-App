@@ -30,9 +30,6 @@ export default function UpdateRecipeForm({ setShowUpdateForm, editingRecipe, onR
                 await onRecipesUpdated();
                 setShowUpdateForm(false);
             }
-            /*fetchRecipes(jwtToken).then(() => {
-                setShowUpdateForm(false);
-            });*/
         } catch (error) {
             console.error('Error updating recipe:', error);
         }
